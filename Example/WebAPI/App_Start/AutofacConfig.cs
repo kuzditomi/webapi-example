@@ -22,7 +22,7 @@ namespace WebAPI
 
             builder.RegisterType<CarRepository>()
                 .As<ICarRepository>()
-                .InstancePerRequest();
+                .SingleInstance();
 
             // Set the dependency resolver to be Autofac
             var container = builder.Build();

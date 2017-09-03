@@ -7,7 +7,7 @@ namespace Common.Repository
     public interface ICarRepository
     {
         Task<IEnumerable<Car>> GetAllCars();
-
         Task<Car> GetCarById(int id);
+        Task<Car> CreateCar(Car car);
     }
 }

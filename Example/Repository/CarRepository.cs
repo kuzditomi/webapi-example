@@ -8,25 +8,38 @@ namespace Repository
 {
     public class CarRepository : ICarRepository
     {
-        private List<Car> _cars { get;}
+        private int _idCounter = 1;
+        private List<Car> _cars { get; }
 
         public CarRepository()
         {
-            this._cars = new List<Car>
+            this._cars = new List<Car>();
+
+            AddCar(new Car
             {
-                new Car
-                {
-                    Id = 1,
-                    PlateNumber = "ABC-123",
-                    Color = CarColor.Red
-                },
-                new Car
-                {
-                    Id = 2,
-                    PlateNumber = "CDE-321",
-                    Color = CarColor.Green
-                },
+                PlateNumber = "ABC-123",
+                Color = CarColor.Red
+            });
+
+            AddCar(new Car
+            {
+                PlateNumber = "CDE-321",
+                Color = CarColor.Green
+            });
+        }
+
+        private Car AddCar(Car car)
+        {
+            var carToCreate = new Car
+            {
+                Id = _idCounter++,
+                PlateNumber = car.PlateNumber,
+                Color = car.Color
             };
+
+            _cars.Add(carToCreate);
+
+            return carToCreate;
         }
 
         public Task<IEnumerable<Car>> GetAllCars()
@@ -41,6 +54,13 @@ namespace Repository
             var car = _cars.SingleOrDefault(c => c.Id == id);
 
             return Task.FromResult<Car>(car);
+        }
+
+        public Task<Car> CreateCar(Car car)
+        {
+            var created = AddCar(car);
+
+            return Task.FromResult(created);
         }
     }
 }

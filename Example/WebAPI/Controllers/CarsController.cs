@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Http.ModelBinding;
 using Common.Repository;
 using Repository;
 using WebAPI.ViewModels;
@@ -43,7 +45,7 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets car by it's id in the system
+        /// Get car by it's id in the system
         /// </summary>
         /// <param name="id">Id of car in system</param>
         /// <response code="200">Returns the car</response>
@@ -66,6 +68,39 @@ namespace WebAPI.Controllers
                 PlateNumber = car.PlateNumber,
                 Color = (CarColor) car.Color
             });
+        }
+
+        /// <summary>
+        /// Add car to the system
+        /// </summary>
+        /// <param name="car">Car to create</param>
+        /// <response code="201">Returns the created car</response>
+        /// <response code="400">If the request model is invalid</response>
+        [HttpPost]
+        [Route("")]
+        [ResponseType(typeof(Car)), ResponseType(typeof(ModelStateDictionary))]
+        public async Task<IHttpActionResult> AddCar(CreateCar car)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var carToAdd = new Common.Models.Car
+            {
+                Color = (Common.Models.CarColor) car.Color,
+                PlateNumber = car.PlateNumber
+            };
+
+            var createdCar = await _repository.CreateCar(carToAdd);
+            var result = new Car
+            {
+                Id = createdCar.Id,
+                PlateNumber = createdCar.PlateNumber,
+                Color = (CarColor) createdCar.Color
+            };
+
+            return Created<Car>(new Uri(Request.RequestUri.ToString() + createdCar.Id), result);
         }
     }
 }
