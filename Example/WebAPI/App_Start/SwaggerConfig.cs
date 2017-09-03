@@ -1,7 +1,4 @@
-using System;
 using System.Web.Http;
-using WebActivatorEx;
-using WebAPI;
 using Swashbuckle.Application;
 
 namespace WebAPI

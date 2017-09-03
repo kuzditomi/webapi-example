@@ -4,6 +4,6 @@
     {
         Red,
         Green,
-        Black
+        Blue
     }
 }

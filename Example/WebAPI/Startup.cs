@@ -20,7 +20,10 @@ namespace WebAPI
 
             // setup swagger
             SwaggerConfig.Register(httpConfig);
-            
+
+            // setup autofac
+            AutofacConfig.Register(httpConfig);
+
             // register to owin
             app.UseWebApi(httpConfig);
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Common.Repository;
 using Repository;
 using WebAPI.ViewModels;
 
@@ -11,11 +12,11 @@ namespace WebAPI.Controllers
     [RoutePrefix("api/cars")]
     public class CarsController : ApiController
     {
-        private CarRepository _repository;
+        private ICarRepository _repository;
 
-        public CarsController()
+        public CarsController(ICarRepository repository)
         {
-            this._repository = new CarRepository();
+            this._repository = repository;
         }
 
         /// <summary>
@@ -52,9 +53,7 @@ namespace WebAPI.Controllers
         [ResponseType(typeof(Car)), ResponseType(typeof(string))]
         public async Task<IHttpActionResult> GetCarById(int id)
         {
-            var cars = await this._repository.GetAllCars().ConfigureAwait(false);
-
-            var car = cars.SingleOrDefault(c => c.Id == id);
+            var car = await this._repository.GetCarById(id).ConfigureAwait(false);
 
             if (car == null)
             {
