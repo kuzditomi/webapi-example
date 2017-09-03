@@ -13,9 +13,8 @@ namespace WebAPI
                     c.SingleApiVersion("v1", "WebAPI");
                     c.IncludeXmlComments(string.Format(@"{0}\bin\WebAPI.XML",
                         System.AppDomain.CurrentDomain.BaseDirectory));
-
-                    c.PrettyPrint();
                     c.DescribeAllEnumsAsStrings();
+
                 })
                 .EnableSwaggerUi("swagger/docs/v1");
         }

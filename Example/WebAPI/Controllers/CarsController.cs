@@ -27,6 +27,7 @@ namespace WebAPI.Controllers
         /// <remarks>
         /// We can add some implementation notes here
         /// </remarks>
+        /// <returns>All cars in the system</returns>
         [HttpGet]
         [Route("")]
         [ResponseType(typeof(List<ViewModels.Car>))]
@@ -47,6 +48,7 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Get car by it's id in the system
         /// </summary>
+        /// <returns>The car with specified Id</returns>
         /// <param name="id">Id of car in system</param>
         /// <response code="200">Returns the car</response>
         /// <response code="404">If car with given Id is not found</response>
@@ -74,6 +76,7 @@ namespace WebAPI.Controllers
         /// Add car to the system
         /// </summary>
         /// <param name="car">Car to create</param>
+        /// <returns>The created car</returns>
         /// <response code="201">Returns the created car</response>
         /// <response code="400">If the request model is invalid</response>
         [HttpPost]
