@@ -54,8 +54,16 @@
       <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Owin.FileSystems, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.FileSystems.3.1.0\lib\net45\Microsoft.Owin.FileSystems.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.StaticFiles, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.StaticFiles.3.1.0\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -114,6 +122,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="swagger-ui\swagger-ui-bundle.js.map" />
+    <Content Include="swagger-ui\swagger-ui-standalone-preset.js.map" />
+    <Content Include="swagger-ui\swagger-ui.css.map" />
+    <Content Include="swagger-ui\swagger-ui.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -122,6 +134,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="swagger-ui\favicon-16x16.png" />
+    <Content Include="swagger-ui\favicon-32x32.png" />
+    <Content Include="swagger-ui\index.html" />
+    <Content Include="swagger-ui\oauth2-redirect.html" />
+    <Content Include="swagger-ui\swagger-ui-bundle.js" />
+    <Content Include="swagger-ui\swagger-ui-standalone-preset.js" />
+    <Content Include="swagger-ui\swagger-ui.css" />
+    <Content Include="swagger-ui\swagger-ui.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -154,7 +174,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49530</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

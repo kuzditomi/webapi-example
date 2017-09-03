@@ -10,6 +10,9 @@ namespace WebAPI
     {
         public void Configuration(IAppBuilder app)
         {
+            // Serve Swagger UI
+            app.UseStaticFiles();
+
             var httpConfig = new HttpConfiguration();
 
             // setup webapi
@@ -17,9 +20,10 @@ namespace WebAPI
 
             // setup swagger
             SwaggerConfig.Register(httpConfig);
-
+            
             // register to owin
             app.UseWebApi(httpConfig);
+
         }
     }
 }

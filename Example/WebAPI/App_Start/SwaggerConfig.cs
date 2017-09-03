@@ -20,10 +20,7 @@ namespace WebAPI
                     c.PrettyPrint();
                     c.DescribeAllEnumsAsStrings();
                 })
-                .EnableSwaggerUi(c =>
-                {
-                    c.DocumentTitle("Example webapi documentation");
-                });
+                .EnableSwaggerUi("swagger/docs/v1");
         }
     }
 }
