@@ -12,13 +12,13 @@ namespace WebAPI
         {
             var httpConfig = new HttpConfiguration();
 
-            // we only need json formatter now
-            httpConfig.Formatters.Remove(httpConfig.Formatters.XmlFormatter);
+            // setup webapi
+            WebApiConfig.Register(httpConfig);
 
-            // use explicit routes
-            httpConfig.MapHttpAttributeRoutes();
+            // setup swagger
+            SwaggerConfig.Register(httpConfig);
 
-            // register webapi to owin
+            // register to owin
             app.UseWebApi(httpConfig);
         }
     }
