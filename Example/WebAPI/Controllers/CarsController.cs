@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -17,9 +18,15 @@ namespace WebAPI.Controllers
             this._repository = new CarRepository();
         }
 
+        /// <summary>
+        /// Get all cars
+        /// </summary>
+        /// <remarks>
+        /// We can add some implementation notes here
+        /// </remarks>
         [HttpGet]
         [Route("")]
-        [ResponseType(typeof(IEnumerable<ViewModels.Car>))]
+        [ResponseType(typeof(List<ViewModels.Car>))]
         public async Task<IHttpActionResult> GetCars()
         {
             var cars = await this._repository.GetAllCars().ConfigureAwait(false);
