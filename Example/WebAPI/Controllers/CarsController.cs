@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Description;
 using System.Web.Http.ModelBinding;
 using Common.Repository;
-using Repository;
+using Swashbuckle.Swagger.Annotations;
 using WebAPI.ViewModels;
 
 namespace WebAPI.Controllers
@@ -28,9 +27,10 @@ namespace WebAPI.Controllers
         /// We can add some implementation notes here
         /// </remarks>
         /// <returns>All cars in the system</returns>
+        /// <response code="200"></response>
         [HttpGet]
         [Route("")]
-        [ResponseType(typeof(List<ViewModels.Car>))]
+        [SwaggerResponse(200, Type = typeof(List<ViewModels.Car>))]
         public async Task<IHttpActionResult> GetCars()
         {
             var cars = await this._repository.GetAllCars().ConfigureAwait(false);
@@ -50,11 +50,12 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <returns>The car with specified Id</returns>
         /// <param name="id">Id of car in system</param>
-        /// <response code="200">Returns the car</response>
+        /// <response code="200"></response>
         /// <response code="404">If car with given Id is not found</response>
         [HttpGet]
         [Route("{id}")]
-        [ResponseType(typeof(Car)), ResponseType(typeof(string))]
+        [SwaggerResponse(200, Type = typeof(Car))]
+        [SwaggerResponse(404)]
         public async Task<IHttpActionResult> GetCarById(int id)
         {
             var car = await this._repository.GetCarById(id).ConfigureAwait(false);
@@ -68,7 +69,7 @@ namespace WebAPI.Controllers
             {
                 Id = car.Id,
                 PlateNumber = car.PlateNumber,
-                Color = (CarColor) car.Color
+                Color = (CarColor)car.Color
             });
         }
 
@@ -77,11 +78,12 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="car">Car to create</param>
         /// <returns>The created car</returns>
-        /// <response code="201">Returns the created car</response>
-        /// <response code="400">If the request model is invalid</response>
+        /// <response code="201"></response>
+        /// <response code="400"></response>
         [HttpPost]
         [Route("")]
-        [ResponseType(typeof(Car)), ResponseType(typeof(ModelStateDictionary))]
+        [SwaggerResponse(201, "Returns the created car", typeof(Car))]
+        [SwaggerResponse(400, "If the request model is invalid", Type = typeof(ModelStateDictionary))]
         public async Task<IHttpActionResult> AddCar(CreateCar car)
         {
             if (!ModelState.IsValid)
@@ -91,7 +93,7 @@ namespace WebAPI.Controllers
 
             var carToAdd = new Common.Models.Car
             {
-                Color = (Common.Models.CarColor) car.Color,
+                Color = (Common.Models.CarColor)car.Color,
                 PlateNumber = car.PlateNumber
             };
 
@@ -100,7 +102,7 @@ namespace WebAPI.Controllers
             {
                 Id = createdCar.Id,
                 PlateNumber = createdCar.PlateNumber,
-                Color = (CarColor) createdCar.Color
+                Color = (CarColor)createdCar.Color
             };
 
             return Created<Car>(new Uri(Request.RequestUri.ToString() + createdCar.Id), result);
