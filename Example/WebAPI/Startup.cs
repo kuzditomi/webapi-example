@@ -26,7 +26,6 @@ namespace WebAPI
 
             // register to owin
             app.UseWebApi(httpConfig);
-
         }
     }
 }

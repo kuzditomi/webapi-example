@@ -163,6 +163,7 @@
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CarsController.cs" />
+    <Compile Include="ViewModels\CarFilterViewModel.cs" />
     <Compile Include="ViewModels\CreateCar.cs" />
     <Compile Include="ViewModels\Car.cs" />
     <Compile Include="ViewModels\CarColor.cs" />

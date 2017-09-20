@@ -36,21 +36,28 @@ namespace Example
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
     
         /// <summary>Get all cars</summary>
+        /// <param name="plateNumber">String to be included in car's plate number</param>
+        /// <param name="color">Only color to filter to</param>
         /// <returns>OK</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Car>> GetCarsAsync()
+        public System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Car>> GetCarsAsync(string plateNumber, Color? color)
         {
-            return GetCarsAsync(System.Threading.CancellationToken.None);
+            return GetCarsAsync(plateNumber, color, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Get all cars</summary>
+        /// <param name="plateNumber">String to be included in car's plate number</param>
+        /// <param name="color">Only color to filter to</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Car>> GetCarsAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Car>> GetCarsAsync(string plateNumber, Color? color, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl).Append("/api/cars");
+            urlBuilder_.Append(BaseUrl).Append("/api/cars?");
+            if (plateNumber != null) urlBuilder_.Append("plateNumber=").Append(System.Uri.EscapeDataString(System.Convert.ToString(plateNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            if (color != null) urlBuilder_.Append("color=").Append(System.Uri.EscapeDataString(System.Convert.ToString(color.Value, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -175,7 +182,16 @@ namespace Example
                         if (status_ == "400") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("If the request model is invalid", status_, responseData_, headers_, null);
+                            var result_ = default(System.Collections.Generic.Dictionary<string, ModelState>); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, ModelState>>(responseData_, _settings.Value);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new SwaggerException<System.Collections.Generic.Dictionary<string, ModelState>>("If the request model is invalid", status_, responseData_, headers_, result_, null);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -202,7 +218,7 @@ namespace Example
     
         /// <summary>Get car by it's id in the system</summary>
         /// <param name="id">Id of car in system</param>
-        /// <returns>Returns the car</returns>
+        /// <returns>OK</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<Car> GetCarByIdAsync(int id)
         {
@@ -212,7 +228,7 @@ namespace Example
         /// <summary>Get car by it's id in the system</summary>
         /// <param name="id">Id of car in system</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Returns the car</returns>
+        /// <returns>OK</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<Car> GetCarByIdAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
@@ -264,7 +280,7 @@ namespace Example
                         if (status_ == "404") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("If car with given Id is not found", status_, responseData_, headers_, null);
+                            throw new SwaggerException("NotFound", status_, responseData_, headers_, null);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -293,6 +309,64 @@ namespace Example
     
     
 
+    /// <summary>Filter type for car filering</summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]
+    public partial class CarFilterViewModel : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _plateNumber;
+        private CarFilterViewModelColor? _color;
+    
+        /// <summary>String to be included in car's plate number</summary>
+        [Newtonsoft.Json.JsonProperty("PlateNumber", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PlateNumber
+        {
+            get { return _plateNumber; }
+            set 
+            {
+                if (_plateNumber != value)
+                {
+                    _plateNumber = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        /// <summary>Only color to filter to</summary>
+        [Newtonsoft.Json.JsonProperty("Color", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CarFilterViewModelColor? Color
+        {
+            get { return _color; }
+            set 
+            {
+                if (_color != value)
+                {
+                    _color = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+    
+        public string ToJson() 
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+        
+        public static CarFilterViewModel FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<CarFilterViewModel>(data);
+        }
+    
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) 
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    
     /// <summary>Car</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]
     public partial class Car : System.ComponentModel.INotifyPropertyChanged
@@ -426,6 +500,212 @@ namespace Example
             if (handler != null) 
                 handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]
+    public partial class ModelState : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.Collections.ObjectModel.ObservableCollection<ModelError> __errors;
+        private ValueProviderResult _<Value>k__BackingField;
+    
+        [Newtonsoft.Json.JsonProperty("_errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<ModelError> _errors
+        {
+            get { return __errors; }
+            set 
+            {
+                if (__errors != value)
+                {
+                    __errors = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("<Value>k__BackingField", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ValueProviderResult <Value>k__BackingField
+        {
+            get { return _<Value>k__BackingField; }
+            set 
+            {
+                if (_<Value>k__BackingField != value)
+                {
+                    _<Value>k__BackingField = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+    
+        public string ToJson() 
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+        
+        public static ModelState FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ModelState>(data);
+        }
+    
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) 
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]
+    public partial class ModelError : System.ComponentModel.INotifyPropertyChanged
+    {
+        private object _<Exception>k__BackingField;
+        private string _<ErrorMessage>k__BackingField;
+    
+        [Newtonsoft.Json.JsonProperty("<Exception>k__BackingField", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object <Exception>k__BackingField
+        {
+            get { return _<Exception>k__BackingField; }
+            set 
+            {
+                if (_<Exception>k__BackingField != value)
+                {
+                    _<Exception>k__BackingField = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("<ErrorMessage>k__BackingField", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string <ErrorMessage>k__BackingField
+        {
+            get { return _<ErrorMessage>k__BackingField; }
+            set 
+            {
+                if (_<ErrorMessage>k__BackingField != value)
+                {
+                    _<ErrorMessage>k__BackingField = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+    
+        public string ToJson() 
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+        
+        public static ModelError FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ModelError>(data);
+        }
+    
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) 
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]
+    public partial class ValueProviderResult : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string __instanceCulture;
+        private string _<AttemptedValue>k__BackingField;
+        private object _<RawValue>k__BackingField;
+    
+        [Newtonsoft.Json.JsonProperty("_instanceCulture", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string _instanceCulture
+        {
+            get { return __instanceCulture; }
+            set 
+            {
+                if (__instanceCulture != value)
+                {
+                    __instanceCulture = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("<AttemptedValue>k__BackingField", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string <AttemptedValue>k__BackingField
+        {
+            get { return _<AttemptedValue>k__BackingField; }
+            set 
+            {
+                if (_<AttemptedValue>k__BackingField != value)
+                {
+                    _<AttemptedValue>k__BackingField = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        [Newtonsoft.Json.JsonProperty("<RawValue>k__BackingField", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object <RawValue>k__BackingField
+        {
+            get { return _<RawValue>k__BackingField; }
+            set 
+            {
+                if (_<RawValue>k__BackingField != value)
+                {
+                    _<RawValue>k__BackingField = value; 
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+    
+        public string ToJson() 
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+        
+        public static ValueProviderResult FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ValueProviderResult>(data);
+        }
+    
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) 
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    
+    /// <summary>Only color to filter to</summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]
+    public enum Color
+    {
+        [System.Runtime.Serialization.EnumMember(Value = "Red")]
+        Red = 0,
+    
+        [System.Runtime.Serialization.EnumMember(Value = "Green")]
+        Green = 1,
+    
+        [System.Runtime.Serialization.EnumMember(Value = "Blue")]
+        Blue = 2,
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]
+    public enum CarFilterViewModelColor
+    {
+        [System.Runtime.Serialization.EnumMember(Value = "Red")]
+        Red = 0,
+    
+        [System.Runtime.Serialization.EnumMember(Value = "Green")]
+        Green = 1,
+    
+        [System.Runtime.Serialization.EnumMember(Value = "Blue")]
+        Blue = 2,
+    
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.5.0.0")]

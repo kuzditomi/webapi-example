@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -26,12 +27,13 @@ namespace WebAPI.Controllers
         /// <remarks>
         /// We can add some implementation notes here
         /// </remarks>
+        /// <param name="filter">filter containing options to filter cars</param>
         /// <returns>All cars in the system</returns>
         /// <response code="200"></response>
         [HttpGet]
         [Route("")]
         [SwaggerResponse(200, Type = typeof(List<ViewModels.Car>))]
-        public async Task<IHttpActionResult> GetCars()
+        public async Task<IHttpActionResult> GetCars([FromUri]CarFilterViewModel filter)
         {
             var cars = await this._repository.GetAllCars().ConfigureAwait(false);
 
@@ -41,6 +43,18 @@ namespace WebAPI.Controllers
                 PlateNumber = car.PlateNumber,
                 Color = (CarColor)car.Color
             });
+
+            if (filter == null) return Ok(result);
+
+            if (!string.IsNullOrEmpty(filter.PlateNumber))
+            {
+                result = result.Where(c => c.PlateNumber.Contains(filter.PlateNumber));
+            }
+
+            if (filter.Color != null)
+            {
+                result = result.Where(c => c.Color == filter.Color);
+            }
 
             return Ok(result);
         }

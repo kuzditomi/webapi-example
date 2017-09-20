@@ -13,7 +13,7 @@ namespace TestClient
         {
             var client = new Example.CarClient();
 
-            var cars = await client.GetCarsAsync().ConfigureAwait(false);
+            var cars = await client.GetCarsAsync("asd", null).ConfigureAwait(false);
 
             foreach (var car in cars)
             {
